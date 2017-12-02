@@ -1,5 +1,6 @@
 package day2;
 
+import Utils.Helper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -13,7 +14,7 @@ public class Day2 {
   public static void main(String[] args) {
     int sum = 0;
     try (Stream<String> fileStream = Files.lines(Paths.get("resources/day2.txt"))) {
-      sum = fileStream.mapToInt(Day2::getMinMaxDiff).sum();
+      sum = fileStream.mapToInt(Day2::getDivisionResult).sum();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -35,10 +36,8 @@ public class Day2 {
 
   //part2
   private static int getDivisionResult(String s) {
-    List<Integer> rowList = Arrays.stream(s.split("\\s+"))
-        .map(Integer::parseInt)
-        .sorted(Integer::compare)
-        .collect(Collectors.toList());
+    List<Integer> rowList = Helper.getIntegerListFromString(s, "\\s+");
+    rowList.sort(Integer::compare);
 
     for (int i = 0; i < rowList.size() - 1; i++) {
       for (int j = i + 1; j < rowList.size(); j++) {
