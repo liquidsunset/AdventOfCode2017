@@ -4,9 +4,7 @@ import Utils.Helper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Day2 {
@@ -14,7 +12,7 @@ public class Day2 {
   public static void main(String[] args) {
     int sum = 0;
     try (Stream<String> fileStream = Files.lines(Paths.get("resources/day2.txt"))) {
-      sum = fileStream.mapToInt(Day2::getDivisionResult).sum();
+      sum = fileStream.mapToInt(Day2::getMinMaxDiff).sum();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -24,9 +22,7 @@ public class Day2 {
 
   //part1
   private static int getMinMaxDiff(String s) {
-    List<Integer> rowList = Arrays.stream(s.split("\\s+"))
-        .map(Integer::parseInt)
-        .collect(Collectors.toList());
+    List<Integer> rowList = Helper.getIntegerListFromString(s, "\\s+");
 
     int min = rowList.stream().min(Integer::compare).get();
     int max = rowList.stream().max(Integer::compare).get();
