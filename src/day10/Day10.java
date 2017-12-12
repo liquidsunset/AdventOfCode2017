@@ -33,14 +33,14 @@ public class Day10 {
       skipSize = 0;
       position = 0;
 
-      List<Integer> asciiLenghtList = new ArrayList<>();
+      List<Integer> asciiLengthList = new ArrayList<>();
 
       for(char ch : lengths.toCharArray()) {
-        asciiLenghtList.add((int) ch);
+        asciiLengthList.add((int) ch);
       }
 
-      asciiLenghtList.addAll(Arrays.asList(17, 31, 73, 47, 23));
-      calcPart2(hashCycle, asciiLenghtList);
+      asciiLengthList.addAll(Arrays.asList(17, 31, 73, 47, 23));
+      calcPart2(hashCycle, asciiLengthList);
 
     } catch (IOException e) {
       e.printStackTrace();
@@ -50,7 +50,7 @@ public class Day10 {
 
   private static void calcPart1(int[] hashCycle, List<Integer> lengthsList) {
     knotInput(hashCycle, lengthsList);
-    System.out.println("Pat 1: " + hashCycle[0] * hashCycle[1]);
+    System.out.println("Part 1: " + hashCycle[0] * hashCycle[1]);
   }
 
   private static void calcPart2(int[] hashCycle, List<Integer> lengthsList) {
@@ -61,14 +61,14 @@ public class Day10 {
     AtomicInteger count = new AtomicInteger(-1);
     List<Integer> list = Arrays.stream(hashCycle).boxed().collect(Collectors.toList());
     Collection<List<Integer>> batchedLists = list.stream()
-        .collect(Collectors.groupingBy(s ->
+        .collect(Collectors.groupingBy(value ->
         Math.floorDiv(count.incrementAndGet(), 16))).values();
 
-    List<Integer> xorList = batchedLists.stream().mapToInt(s -> s.stream()
+    List<Integer> xorList = batchedLists.stream().mapToInt(batchList -> batchList.stream()
         .reduce((a,b) -> a^b).get()).boxed()
         .collect(Collectors.toList());
 
-    List<String> hexList = xorList.stream().map(s -> String.format("%02X", s).toLowerCase()).collect(Collectors.toList());
+    List<String> hexList = xorList.stream().map(value -> String.format("%02X", value).toLowerCase()).collect(Collectors.toList());
     System.out.print("Part 2: ");
     hexList.forEach(System.out::print);
   }
