@@ -35,7 +35,7 @@ public class Day10 {
 
       List<Integer> asciiLengthList = new ArrayList<>();
 
-      for(char ch : lengths.toCharArray()) {
+      for (char ch : lengths.toCharArray()) {
         asciiLengthList.add((int) ch);
       }
 
@@ -54,7 +54,7 @@ public class Day10 {
   }
 
   private static void calcPart2(int[] hashCycle, List<Integer> lengthsList) {
-    for(int i = 0; i < 64; i++) {
+    for (int i = 0; i < 64; i++) {
       knotInput(hashCycle, lengthsList);
     }
 
@@ -62,13 +62,14 @@ public class Day10 {
     List<Integer> list = Arrays.stream(hashCycle).boxed().collect(Collectors.toList());
     Collection<List<Integer>> batchedLists = list.stream()
         .collect(Collectors.groupingBy(value ->
-        Math.floorDiv(count.incrementAndGet(), 16))).values();
+            Math.floorDiv(count.incrementAndGet(), 16))).values();
 
     List<Integer> xorList = batchedLists.stream().mapToInt(batchList -> batchList.stream()
-        .reduce((a,b) -> a^b).get()).boxed()
+        .reduce((a, b) -> a ^ b).get()).boxed()
         .collect(Collectors.toList());
 
-    List<String> hexList = xorList.stream().map(value -> String.format("%02X", value).toLowerCase()).collect(Collectors.toList());
+    List<String> hexList = xorList.stream().map(value -> String.format("%02X", value).toLowerCase())
+        .collect(Collectors.toList());
     System.out.print("Part 2: ");
     hexList.forEach(System.out::print);
   }
