@@ -62,7 +62,7 @@ public class Day10 {
     List<Integer> list = Arrays.stream(hashCycle).boxed().collect(Collectors.toList());
     Collection<List<Integer>> batchedLists = list.stream()
         .collect(Collectors.groupingBy(value ->
-            Math.floorDiv(count.incrementAndGet(), 16))).values();
+            count.incrementAndGet() / 16)).values();
 
     List<Integer> xorList = batchedLists.stream().mapToInt(batchList -> batchList.stream()
         .reduce((a, b) -> a ^ b).get()).boxed()
