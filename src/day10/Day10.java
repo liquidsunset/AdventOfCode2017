@@ -32,7 +32,7 @@ public class Day10 {
       calcPart1(hashCycle.clone(), lengthsList);
 
       List<Integer> asciiLengthList = new ArrayList<>();
-      lengths = "flqrgnkx-1";
+
       for (char ch : lengths.toCharArray()) {
         asciiLengthList.add((int) ch);
       }
