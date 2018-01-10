@@ -30,17 +30,17 @@ public class Day10 {
       }
 
       calcPart1(hashCycle.clone(), lengthsList);
-      skipSize = 0;
-      position = 0;
 
       List<Integer> asciiLengthList = new ArrayList<>();
-
+      lengths = "flqrgnkx-1";
       for (char ch : lengths.toCharArray()) {
         asciiLengthList.add((int) ch);
       }
 
-      asciiLengthList.addAll(Arrays.asList(17, 31, 73, 47, 23));
-      calcPart2(hashCycle, asciiLengthList);
+      List<String> hexList = calcPart2(hashCycle, asciiLengthList);
+
+      System.out.print("Part 2: ");
+      hexList.forEach(System.out::print);
 
     } catch (IOException e) {
       e.printStackTrace();
@@ -53,7 +53,10 @@ public class Day10 {
     System.out.println("Part 1: " + hashCycle[0] * hashCycle[1]);
   }
 
-  private static void calcPart2(int[] hashCycle, List<Integer> lengthsList) {
+  public static List<String> calcPart2(int[] hashCycle, List<Integer> lengthsList) {
+    skipSize = 0;
+    position = 0;
+    lengthsList.addAll(Arrays.asList(17, 31, 73, 47, 23));
     for (int i = 0; i < 64; i++) {
       knotInput(hashCycle, lengthsList);
     }
@@ -68,10 +71,8 @@ public class Day10 {
         .reduce((a, b) -> a ^ b).get()).boxed()
         .collect(Collectors.toList());
 
-    List<String> hexList = xorList.stream().map(value -> String.format("%02X", value).toLowerCase())
+    return xorList.stream().map(value -> String.format("%02X", value).toLowerCase())
         .collect(Collectors.toList());
-    System.out.print("Part 2: ");
-    hexList.forEach(System.out::print);
   }
 
 
