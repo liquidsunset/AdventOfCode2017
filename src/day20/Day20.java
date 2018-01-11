@@ -43,13 +43,13 @@ public class Day20 {
     try (Stream<String> fileStream = Files.lines(Paths.get("resources/day20.txt"))) {
 
       fileStream.forEach(line -> {
-        Pattern p3 = Pattern.compile("<(.*?)>");
-        Matcher m3 = p3.matcher(line);
+        Pattern pattern = Pattern.compile("<(.*?)>");
+        Matcher matcher = pattern.matcher(line);
 
         Particle particle = new Particle();
-        for (int i = 0; m3.find(); i++) {
+        for (int i = 0; matcher.find(); i++) {
           List<Integer> list = Helper
-              .getIntegerListFromString(m3.group().replaceAll("[<>]", ""), ",");
+              .getIntegerListFromString(matcher.group().replaceAll("[<>]", ""), ",");
           if (i == 0) {
             particle.position = new Point3D(list.get(0), list.get(1), list.get(2));
           } else if (i == 1) {
