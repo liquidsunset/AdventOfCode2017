@@ -16,9 +16,8 @@ public class Day18 {
 
   public static void main(String[] args) {
     try (Stream<String> fileStream = Files.lines(Paths.get("resources/day18.txt"))) {
-      Map<String, BigInteger> registers = new HashMap<>();
+      HashMap<String, BigInteger> registers = new HashMap<>();
       ArrayList<Instruction> instructions = new ArrayList<>();
-
       fileStream.forEach(line -> {
         String[] splitInstruction = line.split(" ");
         Instruction instruction = new Instruction();
@@ -35,13 +34,15 @@ public class Day18 {
         instructions.add(instruction);
       });
 
-      System.out.println(getSounds(instructions, registers).getLast().intValue());
+      System.out.println(
+          "Part 1: " + getSounds(instructions, new HashMap<>(registers)).getLast().intValue());
+      System.out.println("Part 2: " + part2(instructions, new HashMap<>(registers)));
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
-  private static boolean isNumeric(String value) {
+  static boolean isNumeric(String value) {
     return value != null && value.matches("[-+]?\\d*\\.?\\d+");
   }
 
@@ -115,8 +116,7 @@ public class Day18 {
           }
 
           programCounter += offset;
-
-          if (programCounter < 0 || programCounter > instructions.size()) {
+          if (programCounter < 0 || programCounter >= instructions.size()) {
             break loop;
           } else {
             jump = true;
@@ -125,18 +125,48 @@ public class Day18 {
 
           break;
         default:
-          System.out.println("Command nor found: " + instruction.command);
+          System.out.println("Command not found: " + instruction.command);
       }
 
       if (jump) {
         jump = false;
       } else {
-        instruction = instructions.get(++programCounter);
+        programCounter++;
+        if (programCounter < 0 || programCounter >= instructions.size()) {
+          break loop;
+        }
+        instruction = instructions.get(programCounter);
       }
 
     }
 
     return sounds;
+  }
+
+  private static int part2(ArrayList<Instruction> instructions,
+      HashMap<String, BigInteger> registers) {
+
+    Day18Program program0 = new Day18Program(instructions, new HashMap<>(registers),
+        BigInteger.ZERO);
+    Day18Program program1 = new Day18Program(instructions, new HashMap<>(registers),
+        BigInteger.ONE);
+
+    program0.setReceivingList(program1.getReceivingList());
+    program1.setReceivingList(program0.getReceivingList());
+
+    while (!((program0.isTerminated() && program1.isTerminated()) ||
+        (program0.isWaitingForSound() && program1.isWaitingForSound()))) {
+      System.out.println(program0.getMessagesSent());
+      System.out.println(program1.getMessagesSent());
+      while (!program0.isTerminated() && !program0.isWaitingForSound()) {
+        program0.executeSoundCommand();
+      }
+      while (!program1.isTerminated() && !program1.isWaitingForSound()) {
+        program1.executeSoundCommand();
+      }
+    }
+
+    return program1.getMessagesSent();
   }
 
 
@@ -146,5 +176,4 @@ public class Day18 {
     String registerOrValue;
     String value;
   }
-
 }
