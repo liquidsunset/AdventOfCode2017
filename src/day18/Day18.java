@@ -12,12 +12,22 @@ import java.util.stream.Stream;
 
 public class Day18 {
 
-  private static int programCounter = 0;
-
   public static void main(String[] args) {
-    try (Stream<String> fileStream = Files.lines(Paths.get("resources/day18.txt"))) {
-      HashMap<String, BigInteger> registers = new HashMap<>();
-      ArrayList<Instruction> instructions = new ArrayList<>();
+    HashMap<String, BigInteger> registers = new HashMap<>();
+    ArrayList<Instruction> instructions = new ArrayList<>();
+    processInput("resources/day18.txt", registers, instructions);
+
+    System.out.println(
+        "Part 1: " + processInstructions(instructions, new HashMap<>(registers), false).getLast()
+            .intValue());
+    System.out.println("Part 2: " + part2(instructions, new HashMap<>(registers)));
+
+  }
+
+  public static void processInput(String file, HashMap<String, BigInteger> registers,
+      ArrayList<Instruction> instructions) {
+    try (Stream<String> fileStream = Files.lines(Paths.get(file))) {
+
       fileStream.forEach(line -> {
         String[] splitInstruction = line.split(" ");
         Instruction instruction = new Instruction();
@@ -33,10 +43,6 @@ public class Day18 {
 
         instructions.add(instruction);
       });
-
-      System.out.println(
-          "Part 1: " + getSounds(instructions, new HashMap<>(registers)).getLast().intValue());
-      System.out.println("Part 2: " + part2(instructions, new HashMap<>(registers)));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -47,10 +53,12 @@ public class Day18 {
   }
 
 
-  private static LinkedList<BigInteger> getSounds(ArrayList<Instruction> instructions,
-      Map<String, BigInteger> registers) {
+  public static LinkedList<BigInteger> processInstructions(ArrayList<Instruction> instructions,
+      Map<String, BigInteger> registers, boolean day23) {
     LinkedList<BigInteger> sounds = new LinkedList<>();
 
+    int programCounter = 0;
+    int mulCounter = 0;
     Instruction instruction = instructions.get(programCounter);
     boolean jump = false;
     loop:
@@ -79,6 +87,15 @@ public class Day18 {
                 BigInteger::add);
           }
           break;
+        case "sub":
+          if (isNumeric(instruction.value)) {
+            registers.merge(instruction.registerOrValue, new BigInteger(instruction.value),
+                BigInteger::subtract);
+          } else {
+            registers.merge(instruction.registerOrValue, registers.get(instruction.value),
+                BigInteger::subtract);
+          }
+          break;
         case "mul":
           if (isNumeric(instruction.value)) {
             registers.merge(instruction.registerOrValue, new BigInteger(instruction.value),
@@ -87,6 +104,7 @@ public class Day18 {
             registers.merge(instruction.registerOrValue, registers.get(instruction.value),
                 BigInteger::multiply);
           }
+          mulCounter++;
           break;
         case "mod":
           if (isNumeric(instruction.value)) {
@@ -103,6 +121,7 @@ public class Day18 {
           }
           break;
         case "jgz":
+        case "jnz":
           int offset;
           if (isNumeric(instruction.registerOrValue)
               || !registers.get(instruction.registerOrValue).equals(BigInteger.ZERO)) {
@@ -139,7 +158,10 @@ public class Day18 {
       }
 
     }
-
+    if (day23) {
+      sounds.clear();
+      sounds.add(BigInteger.valueOf(mulCounter));
+    }
     return sounds;
   }
 
@@ -170,10 +192,10 @@ public class Day18 {
   }
 
 
-  static class Instruction {
+  public static class Instruction {
 
-    String command;
-    String registerOrValue;
-    String value;
+    public String command;
+    public String registerOrValue;
+    public String value;
   }
 }
