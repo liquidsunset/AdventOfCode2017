@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class Day19 {
@@ -89,23 +90,47 @@ public class Day19 {
     }
   }
 
-  enum Direction {
+  public enum Direction {
     NORTH, EAST, SOUTH, WEST
   }
 
-  private static class Point {
+  public static class Point {
 
-    int x;
-    int y;
+    public int x;
+    public int y;
 
-    Point(int x, int y) {
+    public Point(int x, int y) {
       this.x = x;
       this.y = y;
     }
 
-    void addPoint(Point move) {
+    public void addPoint(Point move) {
       this.x += move.x;
       this.y += move.y;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      return Point.class.isInstance(obj) &&
+          ((Point) obj).x == this.x &&
+          ((Point) obj).y == this.y;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(x, y);
+    }
+
+    public Point turnLeft() {
+      return new Point(this.y, -this.x);
+    }
+
+    public Point turnRight() {
+      return new Point(-this.y, this.x);
+    }
+
+    public Point turnOpposite() {
+      return new Point(this.x * -1, this.y * -1);
     }
   }
 
